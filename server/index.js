@@ -24,21 +24,49 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Root route
+app.get('/', (req, res) => {
+    res.json({ 
+        message: 'Welcome to the API',
+        endpoints: {
+            root: '/',
+            api: '/api',
+            users: '/api/user'
+        }
+    });
+});
+
+// API route
+app.get('/api', (req, res) => {
+    res.json({ 
+        message: 'API is running!',
+        environment: process.env.VERCEL ? 'Production (Vercel)' : 'Development'
+    });
+});
+
 // Use user routes
 app.use('/api/user', userRoutes);
 
-// Basic route for the home page
-app.get('/api', (req, res) => {
-    res.json({ 
-        message: 'Server is running!',
-        environment: process.env.VERCEL ? 'Production (Vercel)' : 'Development'
+// 404 handler
+app.use((req, res, next) => {
+    res.status(404).json({
+        error: 'Not Found',
+        message: `Cannot ${req.method} ${req.url}`,
+        availableEndpoints: {
+            root: '/',
+            api: '/api',
+            users: '/api/user'
+        }
     });
 });
 
 // Error handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).json({ message: 'Something went wrong!' });
+    res.status(500).json({ 
+        error: 'Internal Server Error',
+        message: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong!'
+    });
 });
 
 // Detect environment
@@ -46,7 +74,6 @@ const isVercel = process.env.VERCEL === '1' || process.env.VERCEL === 'true';
 
 if (isVercel) {
     // Vercel serverless function export
-    console.log('Running on Vercel 🚀');
     module.exports = async (req, res) => {
         await connectDb();
         app(req, res);
@@ -57,9 +84,12 @@ if (isVercel) {
     connectDb().then(() => {
         app.listen(PORT, () => {
             console.log(`
-🚀 Server is running in development mode
+🚀 Server is running in ${process.env.NODE_ENV || 'development'} mode
 📡 Server URL: http://localhost:${PORT}
-🔌 API endpoint: http://localhost:${PORT}/api
+📍 Available endpoints:
+   - Root: http://localhost:${PORT}/
+   - API: http://localhost:${PORT}/api
+   - Users: http://localhost:${PORT}/api/user
             `);
         });
     }).catch(err => {
