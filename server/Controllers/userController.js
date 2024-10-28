@@ -191,9 +191,9 @@ const fetchPropertiesController = asyncHandler(async (req, res) => {
     res.json(properties);
 });
 
-// Fetch property by ID controller
 const fetchPropertyByIdController = asyncHandler(async (req, res) => {
-    const { id } = req.params; // Get the ID from the URL parameters
+    const { id } = req.params;
+    const pin = req.query.pin; // Get pin from query params
 
     // Find the property by ID
     const property = await Property.findById(id).populate("createdBy", "phoneNumber");
@@ -203,8 +203,22 @@ const fetchPropertyByIdController = asyncHandler(async (req, res) => {
         return res.status(404).json({ message: "Property not found." });
     }
 
-    // Return the property as a JSON response
-    res.json(property);
+    // If property is secure and no pin provided
+    if (property.secure && !pin) {
+        return res.status(403).json({ secure: true, message: "Pin required" });
+    }
+
+    // If pin is provided and property is secure, verify pin
+    if (property.secure && pin) {
+        if (pin === property.accessCode) {
+            return res.status(200).json(property); // Return data if pin matches
+        } else {
+            return res.status(401).json({ secure: true, message: "Invalid pin" });
+        }
+    }
+
+    // Return the property if not secure
+    res.status(200).json(property);
 });
 
 const fetchUserPropertiesController = asyncHandler(async (req, res) => {
@@ -263,9 +277,12 @@ const fetchUserPropertiesController = asyncHandler(async (req, res) => {
 });
 
 const updatePropertyAccessController = asyncHandler(async (req, res) => {
-    const { id } = req.params; // Get the property ID from the URL
-    const { accessCode, secure } = req.body; // Get accessCode and secure from request body
+    const { id, accessCode, secure } = req.body; // Get all fields from request body
   
+    if (!id) {
+      return res.status(400).json({ message: "Property ID is required" });
+    }
+
     // Find the property by ID
     const property = await Property.findById(id);
   
@@ -273,9 +290,9 @@ const updatePropertyAccessController = asyncHandler(async (req, res) => {
       return res.status(404).json({ message: "Property not found." });
     }
   
-    // Update the accessCode and secure fields
-    property.accessCode = accessCode || property.accessCode; // Keep old value if no accessCode is provided
-    property.secure = typeof secure === 'boolean' ? secure : property.secure; // Update only if secure is boolean
+    // Update the fields if provided
+    if (accessCode) property.accessCode = accessCode;
+    if (typeof secure === 'boolean') property.secure = secure;
   
     // Save the updated property
     const updatedProperty = await property.save();
@@ -285,7 +302,6 @@ const updatePropertyAccessController = asyncHandler(async (req, res) => {
       property: updatedProperty,
     });
   });
-  
 
 
 module.exports = {

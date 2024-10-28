@@ -20,6 +20,6 @@ Router.get("/fetch-properties/:id", fetchPropertyByIdController);
 Router.get("/user-properties", fetchUserPropertiesController);
 
 // Update access code and secure fields
-Router.put("/update-property/:id", authMiddleware, updatePropertyAccessController);
+Router.put("/update-property", authMiddleware, updatePropertyAccessController);
 
 module.exports = Router;
