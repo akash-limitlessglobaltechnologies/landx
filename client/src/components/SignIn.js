@@ -12,6 +12,11 @@ function Signin() {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
+
+  const handleLandx = () => {
+    navigate('/');
+  };
+
   const handleSignin = async () => {
     if (phone && pin) {
       try {
@@ -44,7 +49,7 @@ function Signin() {
     <div className="min-h-screen">
       <nav className="p-4 bg-white shadow-sm">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-2xl font-bold text-blue-500">LANDX.IN</h1>
+          <h1 className="text-2xl font-bold text-blue-500" onClick={handleLandx}>LANDX.IN</h1>
         </div>
       </nav>
 

@@ -17,6 +17,10 @@ function Signup() {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  const handleLandx = () => {
+    navigate('/');
+  };
+
   const handleSendOtp = async () => {
     if (phone) {
       try {
@@ -45,7 +49,7 @@ function Signup() {
   const handleVerifyOtp = async () => {
     if (otp) {
       try {
-        const response = await fetch('http://localhost:5001/user/signup', {
+        const response = await fetch(`${process.env.REACT_APP_URI}/signup`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -117,7 +121,7 @@ function Signup() {
     <div className="min-h-screen">
       <nav className="p-4 bg-white shadow-sm">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-2xl font-bold text-blue-500">LANDX.IN</h1>
+          <h1 className="text-2xl font-bold text-blue-500"  onClick={handleLandx}>LANDX.IN</h1>
         </div>
       </nav>
 

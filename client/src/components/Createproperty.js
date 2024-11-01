@@ -17,6 +17,10 @@ const CreateProperty = () => {
   const [loading, setLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   
+
+  const handleLandx = () => {
+    navigate('/dashboard');
+  };
   // Basic Info State
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -171,7 +175,7 @@ const CreateProperty = () => {
     <div className="min-h-screen bg-gray-100">
       <nav className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
-          <h1 className="text-2xl font-bold text-blue-500">LANDX.IN</h1>
+          <h1 className="text-2xl font-bold text-blue-500" onClick={handleLandx}>LANDX.IN</h1>
         </div>
       </nav>
 
