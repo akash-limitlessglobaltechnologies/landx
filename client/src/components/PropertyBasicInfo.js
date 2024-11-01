@@ -54,12 +54,12 @@ export const PropertyBasicInfo = ({
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Enter property title"
           className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-            !title && 'border-red-300 bg-red-50'
+            !title && 'border-gray-300 '
           }`}
           required
         />
         {!title && (
-          <p className="mt-1 text-sm text-red-500">
+          <p className="mt-1 text-sm text-gray-700">
             Please enter a property title
           </p>
         )}
