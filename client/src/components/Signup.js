@@ -198,12 +198,12 @@ function Signup() {
           ) : (
             <>
               <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="username">
-                Username
+                Name
               </label>
               <input
                 type="text"
                 id="username"
-                placeholder="Enter your username"
+                placeholder="Enter your name"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="w-full px-4 py-3 mb-6 border border-gray-200 rounded-lg text-gray-700"
