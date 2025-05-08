@@ -99,11 +99,23 @@ function Property() {
     }
   }, [currentUrl]);
 
+  // Check if the device is mobile
+  const isMobile = useCallback(() => {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  }, []);
+
   const handleWhatsAppShare = useCallback(() => {
     const encodedUrl = encodeURIComponent(currentUrl);
-    const whatsappUrl = `https://web.whatsapp.com/send?text=Check out this property: ${encodedUrl}`;
-    window.open(whatsappUrl, '_blank');
-  }, [currentUrl]);
+    const message = `Check out this property: ${encodedUrl}`;
+    
+    if (isMobile()) {
+      // Open WhatsApp app on mobile devices
+      window.open(`whatsapp://send?text=${message}`, '_blank');
+    } else {
+      // Open WhatsApp web on desktop
+      window.open(`https://web.whatsapp.com/send?text=${message}`, '_blank');
+    }
+  }, [currentUrl, isMobile]);
 
   if (loading) {
     return (
